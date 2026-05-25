@@ -86,8 +86,17 @@ class _CameraScreenState extends State<CameraScreen> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Camera preview fills the screen
-        CameraPreview(_controller!),
+        // Camera preview fills the screen without stretching
+        SizedBox.expand(
+          child: FittedBox(
+            fit: BoxFit.cover,
+            child: SizedBox(
+              width: _controller!.value.previewSize!.height,
+              height: _controller!.value.previewSize!.width,
+              child: CameraPreview(_controller!),
+            ),
+          ),
+        ),
 
         // Card outline overlay — helps user align the card
         _buildCardOverlay(),
@@ -106,10 +115,11 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Widget _buildBottomBar() {
-    return Align(
-      alignment: Alignment.bottomCenter,
+  return Align(
+    alignment: Alignment.bottomCenter,
+    child: SafeArea(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 32),
+        padding: const EdgeInsets.symmetric(vertical: 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -134,8 +144,9 @@ class _CameraScreenState extends State<CameraScreen> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Future<void> _captureCard() async {
     if (_controller == null || !_controller!.value.isInitialized) return;
